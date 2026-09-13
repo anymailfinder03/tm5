@@ -29,6 +29,7 @@ export default {
         'fade-up': 'fadeUp 1s ease-out both',
         'fade-in': 'fadeIn 1.2s ease-out both',
         'seal-float': 'sealFloat 3.5s ease-in-out infinite',
+        'pulse-ring': 'pulseRing 2.5s ease-out infinite',
       },
       keyframes: {
         float: {
@@ -46,6 +47,11 @@ export default {
         sealFloat: {
           '0%, 100%': { transform: 'translateY(0) rotate(-8deg)' },
           '50%': { transform: 'translateY(-6px) rotate(-8deg)' },
+        },
+        pulseRing: {
+          '0%': { transform: 'scale(1)', opacity: '0.5' },
+          '70%': { transform: 'scale(1.6)', opacity: '0' },
+          '100%': { transform: 'scale(1.6)', opacity: '0' },
         },
       },
     },
