@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 type Course = {
   title: string;
@@ -50,6 +51,8 @@ function GoldDivider() {
 export default function CoursesSection() {
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
   const [modalClosing, setModalClosing] = useState(false);
+  const { ref: headerRef, visible: headerVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: gridRef, visible: gridVisible } = useScrollReveal<HTMLDivElement>();
 
   useEffect(() => {
     if (!activeCourse) return;
@@ -89,7 +92,10 @@ export default function CoursesSection() {
 
       <div className="relative z-10 mx-auto max-w-6xl">
         {/* Header */}
-        <div className="mx-auto max-w-3xl text-center">
+        <div
+          ref={headerRef}
+          className={`mx-auto max-w-3xl text-center ${revealTransition} ${revealClass(headerVisible)}`}
+        >
           <p className="mb-4 font-sans text-xs uppercase tracking-[0.3em] text-[#BA7517]">
             Chương trình đào tạo
           </p>
@@ -105,11 +111,12 @@ export default function CoursesSection() {
         <GoldDivider />
 
         {/* Course cards grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:gap-8">
-          {courses.map((course) => (
+        <div ref={gridRef} className="grid gap-6 sm:grid-cols-2 lg:gap-8">
+          {courses.map((course, index) => (
             <article
               key={course.title}
-              className="group flex flex-col overflow-hidden rounded-xl border border-[#BA7517]/30 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-[#BA7517]/60 hover:shadow-lg"
+              className={`group flex flex-col overflow-hidden rounded-xl border border-[#BA7517]/30 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-[#BA7517]/60 hover:shadow-lg ${revealTransition} ${revealClass(gridVisible)}`}
+              style={{ transitionDelay: gridVisible ? `${index * 100}ms` : '0ms' }}
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
@@ -178,7 +185,6 @@ export default function CoursesSection() {
               <h3 className="font-display text-2xl text-brand-red sm:text-3xl">
                 {activeCourse.title}
               </h3>
-              {/* Full course description — can be expanded with more detailed content later */}
               <p className="mt-4 font-sans leading-relaxed text-gray-700">
                 {activeCourse.description}
               </p>

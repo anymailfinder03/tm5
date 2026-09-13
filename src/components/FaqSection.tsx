@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 type FaqItem = {
   question: string;
@@ -46,6 +47,8 @@ function GoldDivider() {
 
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { ref: headerRef, visible: headerVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: listRef, visible: listVisible } = useScrollReveal<HTMLDivElement>();
 
   return (
     <section id="cau-hoi-thuong-gap" className="relative overflow-hidden bg-brand-cream px-6 py-20 sm:py-28">
@@ -54,7 +57,10 @@ export default function FaqSection() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-3xl">
-        <div className="text-center">
+        <div
+          ref={headerRef}
+          className={`text-center ${revealTransition} ${revealClass(headerVisible)}`}
+        >
           <div className="mb-5 flex items-center justify-center gap-4">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-brand-gold-deep/60 sm:w-20" />
             <p className="font-sans text-xs uppercase tracking-[0.3em] text-brand-gold-deep">Giải đáp thắc mắc</p>
@@ -66,13 +72,17 @@ export default function FaqSection() {
           </p>
         </div>
 
-        <div className="mt-10">
+        <div ref={listRef} className="mt-10">
           <GoldDivider />
           <div className="border-t border-brand-gold-deep/25">
             {faqItems.map((item, index) => {
               const isOpen = openIndex === index;
               return (
-                <div key={item.question} className="border-b border-brand-gold-deep/25">
+                <div
+                  key={item.question}
+                  className={`border-b border-brand-gold-deep/25 ${revealTransition} ${revealClass(listVisible)}`}
+                  style={{ transitionDelay: listVisible ? `${index * 100}ms` : '0ms' }}
+                >
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}

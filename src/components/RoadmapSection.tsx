@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Maximize2, X } from 'lucide-react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 function CornerOrnament({ className }: { className: string }) {
   return (
@@ -13,6 +14,8 @@ function CornerOrnament({ className }: { className: string }) {
 export default function RoadmapSection() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxClosing, setLightboxClosing] = useState(false);
+  const { ref: headerRef, visible: headerVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: imageRef, visible: imageVisible } = useScrollReveal<HTMLDivElement>();
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -48,7 +51,10 @@ export default function RoadmapSection() {
       <div className="absolute -left-12 bottom-0 h-px w-48 bg-brand-gold/25" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="mx-auto max-w-3xl text-center">
+        <div
+          ref={headerRef}
+          className={`mx-auto max-w-3xl text-center ${revealTransition} ${revealClass(headerVisible)}`}
+        >
           <div className="mb-7 flex items-center justify-center gap-4">
             <div className="h-px w-14 bg-gradient-to-r from-transparent to-brand-gold/70 sm:w-24" />
             <div className="h-3 w-3 rotate-45 border border-brand-gold bg-brand-gold/20" />
@@ -65,7 +71,11 @@ export default function RoadmapSection() {
           </p>
         </div>
 
-        <div className="relative mx-auto mt-12 max-w-5xl rounded-2xl border-2 border-brand-gold bg-[#FFF8E7] p-3 shadow-2xl shadow-black/25 sm:mt-16 sm:p-6 lg:p-8">
+        <div
+          ref={imageRef}
+          className={`relative mx-auto mt-12 max-w-5xl rounded-2xl border-2 border-brand-gold bg-[#FFF8E7] p-3 shadow-2xl shadow-black/25 sm:mt-16 sm:p-6 lg:p-8 ${revealTransition} ${revealClass(imageVisible)}`}
+          style={{ transitionDelay: '150ms' }}
+        >
           <CornerOrnament className="left-2 top-2 sm:left-3 sm:top-3" />
           <CornerOrnament className="right-2 top-2 rotate-90 sm:right-3 sm:top-3" />
           <CornerOrnament className="bottom-2 left-2 -rotate-90 sm:bottom-3 sm:left-3" />

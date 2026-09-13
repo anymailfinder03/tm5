@@ -1,4 +1,9 @@
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
+
 export default function CtaSection() {
+  const { ref: textRef, visible: textVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: imageRef, visible: imageVisible } = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-brand-red to-[#6E1717] px-6 py-20 sm:py-28 lg:py-32">
       <div className="pointer-events-none absolute -right-20 top-1/2 -translate-y-1/2 font-display text-[20rem] leading-none text-white/[0.035]" aria-hidden="true">
@@ -7,7 +12,10 @@ export default function CtaSection() {
       <div className="pointer-events-none absolute right-[28%] top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-brand-gold/10 blur-3xl" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-20">
-        <div className="text-center lg:text-left">
+        <div
+          ref={textRef}
+          className={`text-center lg:text-left ${revealTransition} ${revealClass(textVisible)}`}
+        >
           <div className="mb-6 flex items-center justify-center gap-4 lg:justify-start">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-brand-gold/70 sm:w-20 lg:from-brand-gold/70" />
             <p className="font-sans text-xs uppercase tracking-[0.3em] text-brand-gold">
@@ -32,7 +40,11 @@ export default function CtaSection() {
           </a>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[440px] lg:mx-0 lg:justify-self-end">
+        <div
+          ref={imageRef}
+          className={`relative mx-auto w-full max-w-[440px] lg:mx-0 lg:justify-self-end ${revealTransition} ${revealClass(imageVisible)}`}
+          style={{ transitionDelay: '150ms' }}
+        >
           <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-xl border-2 border-brand-gold/60" aria-hidden="true" />
           <div className="relative overflow-hidden rounded-xl border-2 border-brand-gold bg-brand-ivory p-1 shadow-2xl shadow-black/25">
             <img

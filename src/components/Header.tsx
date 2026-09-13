@@ -21,6 +21,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-40 transition-all duration-300 ${
@@ -29,7 +33,13 @@ export default function Header() {
     >
       <div className="px-4 py-3 sm:px-8 sm:py-4 lg:px-16">
         <div className="flex items-center justify-between gap-3 md:grid md:grid-cols-[1fr_auto_1fr]">
-          <div className="flex min-w-0 items-center gap-2 justify-self-start sm:gap-3">
+          {/* Logo — clickable to scroll to top on all screen sizes */}
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="flex min-w-0 items-center gap-2 justify-self-start rounded-md py-1 pr-2 text-left transition-colors hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold sm:gap-3"
+            aria-label="Về đầu trang"
+          >
             <img
               src="https://res.cloudinary.com/qugyphlv/image/upload/v1789008137/logo-removebg-preview.png"
               alt="ThanhMai HSK Logo"
@@ -43,7 +53,7 @@ export default function Header() {
                 Trung tâm tiếng Trung
               </span>
             </div>
-          </div>
+          </button>
 
           <nav className="hidden items-center justify-self-center gap-8 md:flex">
             {navLinks.map((link) => (

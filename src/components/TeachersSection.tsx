@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 type Teacher = {
   name: string;
@@ -67,6 +68,8 @@ export default function TeachersSection() {
   const [visibleCount, setVisibleCount] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const { ref: headerRef, visible: headerVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: carouselContainerRef, visible: carouselVisible } = useScrollReveal<HTMLDivElement>();
 
   useEffect(() => {
     const updateVisibleCount = () => {
@@ -113,7 +116,10 @@ export default function TeachersSection() {
     <section id="giang-vien" className="relative overflow-hidden bg-brand-cream px-6 py-20 sm:py-28">
       <div className="pointer-events-none absolute -right-16 top-12 font-display text-[18rem] leading-none text-brand-red/[0.035]" aria-hidden="true">师</div>
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="mx-auto max-w-3xl text-center">
+        <div
+          ref={headerRef}
+          className={`mx-auto max-w-3xl text-center ${revealTransition} ${revealClass(headerVisible)}`}
+        >
           <div className="mb-6 flex items-center justify-center gap-4">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-brand-gold-deep/60 sm:w-20" />
             <p className="font-sans text-xs uppercase tracking-[0.3em] text-brand-gold-deep">Đội ngũ giảng viên</p>
@@ -125,7 +131,11 @@ export default function TeachersSection() {
 
         <div className="mt-10"><GoldDivider /></div>
 
-        <div className="relative px-0 sm:px-10">
+        <div
+          ref={carouselContainerRef}
+          className={`relative px-0 sm:px-10 ${revealTransition} ${revealClass(carouselVisible)}`}
+          style={{ transitionDelay: '150ms' }}
+        >
           <button type="button" onClick={() => scrollToIndex(Math.max(0, activeIndex - 1))} disabled={activeIndex === 0} aria-label="Giảng viên trước" className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-brand-gold-deep bg-brand-cream text-brand-gold-deep shadow-md transition-colors hover:bg-brand-gold hover:text-brand-brown disabled:pointer-events-none disabled:opacity-30 sm:h-11 sm:w-11">
             <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>

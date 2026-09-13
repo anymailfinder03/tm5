@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 /* ─── Brush-style checkmark icon ─── */
 function BrushCheck() {
@@ -46,7 +47,6 @@ function useCountUp(target: number, duration: number, start: boolean) {
     const tick = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setValue(Math.round(eased * target));
       if (progress < 1) {
@@ -71,17 +71,22 @@ function StatCard({
   label,
   start,
   duration,
+  delay,
 }: {
   target: number;
   suffix: string;
   label: string;
   start: boolean;
   duration: number;
+  delay: number;
 }) {
   const { value, done } = useCountUp(target, duration, start);
 
   return (
-    <div className="group bg-white rounded-2xl px-6 py-10 text-center border border-[#BA7517]/40 shadow-sm hover:shadow-xl hover:border-[#BA7517]/70 transition-all duration-300 hover:-translate-y-1">
+    <div
+      className={`group bg-white rounded-2xl px-6 py-10 text-center border border-[#BA7517]/40 shadow-sm hover:shadow-xl hover:border-[#BA7517]/70 transition-all duration-300 hover:-translate-y-1 ${revealTransition} ${revealClass(start)}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
       <div className="font-sans text-5xl sm:text-6xl font-extrabold text-brand-red leading-none tracking-tight">
         {value}
         <span
@@ -108,6 +113,8 @@ const features = [
 ];
 
 export default function AboutSection() {
+  const { ref: textRef, visible: textVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: imageRef, visible: imageVisible } = useScrollReveal<HTMLDivElement>();
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsVisible, setStatsVisible] = useState(false);
 
@@ -133,7 +140,10 @@ export default function AboutSection() {
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
           {/* Left: text content */}
-          <div>
+          <div
+            ref={textRef}
+            className={`${revealTransition} ${revealClass(textVisible)}`}
+          >
             <p className="font-sans text-xs tracking-[0.3em] text-[#BA7517] uppercase mb-4">
               Trung tâm tiếng Trung
             </p>
@@ -162,7 +172,11 @@ export default function AboutSection() {
           </div>
 
           {/* Right: image with decorative framing */}
-          <div className="relative flex justify-center lg:justify-end">
+          <div
+            ref={imageRef}
+            className={`relative flex justify-center lg:justify-end ${revealTransition} ${revealClass(imageVisible)}`}
+            style={{ transitionDelay: '150ms' }}
+          >
             <div className="relative w-full max-w-[420px]">
               {/* Offset gold border */}
               <div
@@ -214,6 +228,7 @@ export default function AboutSection() {
             label="năm phát triển"
             start={statsVisible}
             duration={1800}
+            delay={0}
           />
           <StatCard
             target={100}
@@ -221,6 +236,7 @@ export default function AboutSection() {
             label="học viên đồng hành"
             start={statsVisible}
             duration={2000}
+            delay={100}
           />
           <StatCard
             target={20}
@@ -228,6 +244,7 @@ export default function AboutSection() {
             label="cơ sở toàn quốc"
             start={statsVisible}
             duration={1800}
+            delay={200}
           />
         </div>
       </div>

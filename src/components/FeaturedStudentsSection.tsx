@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useScrollReveal, revealClass, revealTransition } from '@/hooks/useScrollReveal';
 
 const achievements = [
   'https://res.cloudinary.com/qugyphlv/image/upload/v1789259687/vinh-danh-hoc-vien1_a-4.webp',
@@ -10,31 +11,9 @@ const achievements = [
   'https://res.cloudinary.com/qugyphlv/image/upload/v1789259690/vinh-danh-hoc-vien1_a-10.webp',
 ];
 
-function useStaggerReveal(count: number) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return { ref, visible };
-}
-
 export default function FeaturedStudentsSection() {
-  const { ref, visible } = useStaggerReveal(achievements.length);
+  const { ref: headerRef, visible: headerVisible } = useScrollReveal<HTMLDivElement>();
+  const { ref: gridRef, visible: gridVisible } = useScrollReveal<HTMLDivElement>();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -66,8 +45,11 @@ export default function FeaturedStudentsSection() {
     <section id="hoc-vien-tieu-bieu" className="relative overflow-hidden bg-gradient-to-br from-brand-red to-[#6E1717] px-6 py-20 sm:py-28">
       <div className="pointer-events-none absolute -left-16 top-10 font-display text-[18rem] leading-none text-white/[0.035]" aria-hidden="true">榮</div>
 
-      <div ref={ref} className="relative z-10 mx-auto max-w-6xl">
-        <div className="mx-auto max-w-3xl text-center">
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <div
+          ref={headerRef}
+          className={`mx-auto max-w-3xl text-center ${revealTransition} ${revealClass(headerVisible)}`}
+        >
           <div className="mb-6 flex items-center justify-center gap-4">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-brand-gold/70 sm:w-20" />
             <p className="font-sans text-xs uppercase tracking-[0.3em] text-brand-gold">Thành tích học viên</p>
@@ -82,7 +64,7 @@ export default function FeaturedStudentsSection() {
         </div>
 
         {/* Framed grid container */}
-        <div className="relative mt-14 rounded-2xl border border-brand-gold/25 p-4 sm:p-6 lg:p-8">
+        <div ref={gridRef} className="relative mt-14 rounded-2xl border border-brand-gold/25 p-4 sm:p-6 lg:p-8">
           {/* Corner ornaments */}
           <span className="absolute -left-px -top-px h-6 w-6 border-l-2 border-t-2 border-brand-gold/60" aria-hidden="true" />
           <span className="absolute -right-px -top-px h-6 w-6 border-r-2 border-t-2 border-brand-gold/60" aria-hidden="true" />
@@ -95,10 +77,8 @@ export default function FeaturedStudentsSection() {
                 key={src}
                 type="button"
                 onClick={() => setLightboxIndex(index)}
-                className={`group relative block overflow-hidden rounded-xl border border-brand-gold/60 bg-brand-cream p-2 shadow-md transition-all duration-300 hover:scale-[1.03] hover:border-brand-gold hover:shadow-xl ${
-                  visible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-                }`}
-                style={{ transitionDelay: visible ? `${index * 100}ms` : '0ms' }}
+                className={`group relative block overflow-hidden rounded-xl border border-brand-gold/60 bg-brand-cream p-2 shadow-md transition-all duration-300 hover:scale-[1.03] hover:border-brand-gold hover:shadow-xl ${revealTransition} ${revealClass(gridVisible)}`}
+                style={{ transitionDelay: gridVisible ? `${index * 100}ms` : '0ms' }}
                 aria-label={`Xem thành tích học viên ${index + 1}`}
               >
                 <div className="overflow-hidden rounded-lg">
